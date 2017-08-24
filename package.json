@@ -1,0 +1,34 @@
+{
+  "name": "Ironblog",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "migrate": "knex migrate:latest",
+    "dev": "export NODE_ENV=development && supervisor ./bin/www",
+    "create-user": "node ./scripts/create-user.js",
+    "test": "export NODE_ENV=testing && mocha --growl --slow 200 tests"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "bookshelf": "^0.10.4",
+    "chai": "^4.1.1",
+    "chai-http": "^3.0.0",
+    "eslint-config-airbnb-base": "^11.3.1",
+    "knex": "^0.13.0",
+    "koa": "^2.3.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-logger": "^3.0.1",
+    "koa-multer": "^1.0.2",
+    "koa-router": "^7.2.1",
+    "koa-session": "^5.5.0",
+    "mocha": "^3.5.0",
+    "readline-sync": "^1.4.7",
+    "slug": "^0.9.1",
+    "sqlite3": "^3.1.9"
+  },
+  "devDependencies": {
+    "eslint-config-airbnb-base": "^11.3.1",
+    "eslint-plugin-import": "^2.7.0"
+  }
+}
