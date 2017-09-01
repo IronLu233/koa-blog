@@ -4,11 +4,15 @@ const user = require('./user')
 const post = require('./post')
 const tag = require('./tag')
 
-const router = new Router({ prefix: '/api' })
+const viewRouter = new Router()
+const APIRouter = new Router({ prefix: '/api' })
 
-router
+viewRouter.get(/^(?!\/api\/).*/, async ctx => await ctx.render('index.html'))
+
+APIRouter
 .use(user.routes())
 .use(post.routes())
 .use(tag.routes())
 
-module.exports = router
+viewRouter.use(APIRouter.routes())
+module.exports = viewRouter

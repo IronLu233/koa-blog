@@ -1,6 +1,8 @@
 const Router = require('koa-router')
+const path = require('path')
 
 const { isAuthenticated } = require('../middlewares/permission')
+const uploadKit = require('../middlewares/upload')
 
 const router = new Router({ prefix: '/post' })
 router
@@ -20,6 +22,16 @@ router
         return
     }
     ctx.body = post.toJSON()
+})
+.post('/upload', isAuthenticated, uploadKit.single('image'), async ctx => {
+    const { file } = ctx.req;
+    if (!file) {
+        ctx.body = { detail: 'Bad request' }
+        ctx.status = 400
+    }
+
+    ctx.body = { url: path.join('/uploads', file.filename) }
+    ctx.status = 201
 })
 .post('/', isAuthenticated, async ctx => {
     const { Post, Tag } = global
@@ -44,7 +56,7 @@ router
     post = await post.save()
     ctx.body = post.toJSON()
 })
-.patch('/:id', isAuthenticated, async ctx => {
+.patch('/:id', isAuthenticated, uploadKit.single(), async ctx => {
     const { Post, Tag } = global
     const { id } = ctx.params
     const post = await Post.where({ id }).fetch({ withRelated: ['tags']})

@@ -1,6 +1,7 @@
 require('mocha')
 const chai = require('chai')
 const chaiHTTP = require('chai-http')
+const path = require('path')
 const utils = require('./utils')
 const APIClient = require('./client')
 
@@ -63,6 +64,24 @@ describe('test post', done => {
         postCount.should.be.equal(3)
     })
 
+    it('test upload a image', async () => {
+        try {
+            let res = await client
+            .post(endpoint + 'upload')
+            .attach('image', path.resolve(__dirname, 'test-upload.jpg'))
+            res.response.status.should.not.equal(201)
+        } catch (e) {
+            e.should.have.a.property('response')
+            e.response.status.should.eq(401)
+        }
+        client = await utils.getAuthenticatedClient()
+        res = await client
+        .post(endpoint + 'upload')
+        .attach('image', path.resolve(__dirname, 'test-upload.jpg'))
+        console.log(res.body);
+        
+    })
+
     it('delete a post', async () => {
         try {
             let res = await client.del(endpoint + posts[0].id)
@@ -115,6 +134,6 @@ describe('test post', done => {
         })
         post = await posts[0].refresh({ withRelated: ['tags'] })
         data = post.toJSON()
-        data.tags.length.should.equal(3) 
+        data.tags.length.should.equal(3)
     })
 })

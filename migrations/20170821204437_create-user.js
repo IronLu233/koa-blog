@@ -4,8 +4,7 @@ exports.up = function(knex, Promise) {
         table.increments().primary()
         table.string('username')
         table.string('password')
-        table.string('token')
-        table.index('token')
+        table.index('username')
     })
 };
 

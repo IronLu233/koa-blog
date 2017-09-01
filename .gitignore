@@ -1,3 +1,7 @@
 /node_modules
 .DS_Store
 /.vscode
+*.sqlite3
+/public/uploads
+bundle.js
+bundle.js.map
