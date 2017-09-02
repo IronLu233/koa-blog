@@ -18,7 +18,9 @@
                 <mu-td>{{p.title}}</mu-td>
                 <mu-td></mu-td>
                 <mu-td>
-                    <mu-raised-button label="修改"/>
+                    <mu-raised-button
+                    @click="$router.push(`/admin/post/${p.id}/`)"
+                    label="修改"/>
                     <mu-raised-button
                     label="删除"
                     @click="delPost(p.id)"
@@ -32,7 +34,7 @@
             <mu-td/>
             <mu-td/>
             <mu-td>
-                <mu-raised-button label="添加文章" to="/admin/post/add"/>
+                <mu-raised-button label="添加文章" @click="$router.push('/admin/post/add')"/>
                 <mu-raised-button
                 label="删除所选"
                 secondary

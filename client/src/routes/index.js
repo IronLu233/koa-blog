@@ -43,6 +43,10 @@ export default [
                             {
                                 path: 'add',
                                 component: PostModify,
+                            },
+                            {
+                                path: ':id',
+                                component: PostModify
                             }
                         ]
                     },

@@ -25,9 +25,11 @@ router
 })
 .post('/upload', isAuthenticated, uploadKit.single('image'), async ctx => {
     const { file } = ctx.req;
+    console.log(file)
     if (!file) {
         ctx.body = { detail: 'Bad request' }
         ctx.status = 400
+        return
     }
 
     ctx.body = { url: path.join('/uploads', file.filename) }
@@ -35,7 +37,7 @@ router
 })
 .post('/', isAuthenticated, async ctx => {
     const { Post, Tag } = global
-    const { title, content, tags = [] } = ctx.request.body
+    const { title, content, tags = [], abstract, cover } = ctx.request.body
     if (!title || !content) {
         ctx.body = {
             detail: 'Bad request',
@@ -44,7 +46,7 @@ router
         return
     }
     
-    let post = new Post({ title, content })
+    let post = new Post({ title, content, abstract, cover })
     for(let t in tags) {
         let tag = await Tag.where({ name: t }).fetch()
         if (!tag) {
@@ -67,23 +69,33 @@ router
         ctx.status = 400
         return 
     }
-    const { content, title, tags } = ctx.request.body
+    const { content, title, abstract, cover, tags } = ctx.request.body
     if (content) {
         post.set('content', content)
     }
+    
     if (title) {
         post.set('title', title)
     }
+
+    if (abstract) {
+        post.set('abstract', abstract)
+    }
+
+    if (cover) {
+        post.set('cover', cover)
+    }
+
     if (tags !== undefined) {
         await post.tags().detach()
-    }
-    for(let t of tags) {
-        let tag = await Tag.where({ name: t }).fetch()
-        if (!tag) {
-            tag = new Tag({ name: t })
-            await tag.save()
+        for(let t of tags) {
+            let tag = await Tag.where({ name: t }).fetch()
+            if (!tag) {
+                tag = new Tag({ name: t })
+                await tag.save()
+            }
+            await post.tags().attach(tag.id)
         }
-        await post.tags().attach(tag.id)
     }
     
     await post.save()

@@ -13,17 +13,28 @@
   </div>
 </template>
 <script>
-import { mapMutations, mapState } from 'vuex'
+import { mapMutations, mapActions, mapState } from 'vuex'
 
 export default {
   computed: {
     ...mapState({
-        isDrawerOpen: state => state.shared.isDrawerOpen
+        isDrawerOpen: state => state.shared.isDrawerOpen,
+        isLogin: state => state.user.isLogin
     })
   },
   methods: {
-    ...mapMutations(['toggleDrawer'])
+    ...mapMutations(['toggleDrawer']),
+    ...mapActions(['getUserInfo'])
+  },
+  mounted() {
+    this.getUserInfo()
+    .then(res => {
+      if (!res.data.isLogin) {
+      this.$router.replace('/admin/login/')
+    }
+    })
   }
+
 }
 </script>
 <style lang="scss">

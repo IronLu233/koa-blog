@@ -4,6 +4,7 @@ import postDetail from './postDetail'
 import postList from './postList'
 import user from './user'
 import shared from './shared'
+import tag from './tag'
 
 Vue.use(Vuex)
 
@@ -13,6 +14,7 @@ const store = new Vuex.Store({
         postList,
         user,
         shared,
+        tag,
     }
 })
 

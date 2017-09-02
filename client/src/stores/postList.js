@@ -41,6 +41,12 @@ export default {
         },
         uploadCover: ({ state, commit }, image) => {
             return fetchAPI.uploadCover(image)
+        },
+        publishPost: ({ state, commit }, post) => {
+            return fetchAPI.publishPost(post)
+        },
+        updatePost: (context, post) => {
+            
         }
     },
     

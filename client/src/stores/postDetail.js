@@ -31,6 +31,10 @@ export default {
                 dispatch('loadPosts')
             })
         },
+        updatePost: (context, post) => {
+            console.log(post)
+            return fetchAPI.updatePost(post)
+        }
 
     }
 }

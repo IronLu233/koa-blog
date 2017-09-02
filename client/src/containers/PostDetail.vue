@@ -7,7 +7,7 @@
             </mu-card-media>
             <mu-card-title :title="postDetail.data.title" />
             <mu-card-text>
-                {{ postDetail.data.content }}
+                <vue-markdown>{{ postDetail.data.content }}</vue-markdown>
             </mu-card-text>
         </mu-card>
     </mu-paper>
@@ -15,6 +15,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import VueMarkdown from 'vue-markdown'
 
 import LoadingSpinner from '../components/LoadingSpinner.vue'
 
@@ -27,6 +28,9 @@ export default {
   },
   mounted: function () {
       this.loadPostDetail(this.$route.params.id)
+  },
+  components: {
+      VueMarkdown
   }
 }
 </script>

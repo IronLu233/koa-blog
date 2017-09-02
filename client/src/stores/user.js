@@ -25,7 +25,17 @@ export default {
             .finally(() => {
                 commit('toggleLoadingState')
             })
+        },
+        getUserInfo: ({ commit }) => {
+            return fetchAPI.getUserInfo()
+            .then(res => {
+                if (res.data.isLogin) {
+                    commit('setLoginSuccess')
+                } else {
+                    commit('setLoginFailed')
+                }
+                return res
+            })
         }
     }
-
 }

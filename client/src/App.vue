@@ -2,7 +2,7 @@
     <div class="layout">
         <header>
             <mu-appbar>
-                <mu-icon-button v-if="!isDrawerOpen" to="/post" slot="default" icon="home"/>
+                <mu-icon-button v-if="!isDrawerOpen || !inAdminPage" to="/post" slot="default" icon="home"/>
                 <mu-icon-button
                 v-if="inAdminPage"
                 @click="toggleDrawer"
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex'
+import { mapMutations, mapState, mapActions } from 'vuex'
 import _ from 'lodash'
 
 export default {
@@ -27,7 +27,8 @@ export default {
         onFilterClick: function (e) {
 
         },
-        ...mapMutations(['toggleDrawer'])
+        ...mapMutations(['toggleDrawer']),
+        ...mapActions(['fetchTags'])
     },
     computed: {
         inAdminPage () {
@@ -39,7 +40,8 @@ export default {
         })
     },
     mounted () {
-        window.addEventListener('resize', _.debounce(e => {
+        this.fetchTags()
+        window.addEventListener('resize', this.resizeListener = _.debounce(e => {
             const mediaQueryList = window.matchMedia('(min-width: 768px)')
             if (mediaQueryList.matches && !this.isDrawerOpen || !mediaQueryList.matches && this.isDrawerOpen) {
                 this.toggleDrawer()
@@ -48,7 +50,7 @@ export default {
 
     },
     beforeDestroy() {
-        window.removeEventListener('resize')
+        window.removeEventListener('resize', this.resizeListener)
     }
 }
 </script>

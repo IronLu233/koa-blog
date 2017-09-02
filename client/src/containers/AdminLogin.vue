@@ -53,7 +53,18 @@ export default {
                 password: '',
             }
         },
-        ...mapActions(['login'])
+        ...mapActions(['login', 'getUserInfo'])
+    },
+    mounted () {
+        this.getUserInfo()
+        if (this.user.isLogin) {
+            this.$router.push('/admin/post/')
+        }
+        this.$store.watch(() => this.user.isLogin, isLogin => {
+            if (isLogin) {
+                this.$router.push('/admin/post/')
+            }
+        })
     },
     computed: {
         ...mapState(['user'])

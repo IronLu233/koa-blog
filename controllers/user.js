@@ -5,6 +5,12 @@ const { isAuthenticated } = require('../middlewares/permission')
 const router = new Router({ prefix: '/user' })
 
 router
+.get('/', async ctx => {
+    const { uid } = ctx.session
+    ctx.body = {
+        isLogin: !!uid
+    }
+})
 .post('/login', async ctx => {
     const { User } = global
     const { uid } = ctx.session
