@@ -37,6 +37,7 @@
                 <mu-raised-button label="添加文章" @click="$router.push('/admin/post/add')"/>
                 <mu-raised-button
                 label="删除所选"
+                :disabled="selectedPosts.length === 0"
                 secondary
                 @click="handleDelSelections"/>
             </mu-td>

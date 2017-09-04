@@ -6,8 +6,13 @@
                 <div class="img-container" :style="{ backgroundImage: `url(${postDetail.data.cover})` }"/>
             </mu-card-media>
             <mu-card-title :title="postDetail.data.title" />
+            <mu-card-actions>
+                <mu-chip v-for="(tag, index) in postDetail.data.tags" :key="index">
+                    {{ tag.name }}
+                </mu-chip>
+            </mu-card-actions>
             <mu-card-text>
-                <vue-markdown>{{ postDetail.data.content }}</vue-markdown>
+                <vue-markdown class="markdown-text" slot="default">{{ postDetail.data.content }}</vue-markdown>
             </mu-card-text>
         </mu-card>
     </mu-paper>
@@ -45,5 +50,8 @@ export default {
             height: 66vh;
             background-size: 100%;
         }
+    }
+    .markdown-text {
+        padding: 30px;
     }
 </style>

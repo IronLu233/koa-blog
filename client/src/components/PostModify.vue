@@ -2,10 +2,35 @@
     <mu-content-block>
         <mu-text-field v-model="title" label="标题" labelFloat fullWidth/>
         <mu-text-field v-model="abstract" label="简介" labelFloat fullWidth/>
+        <mu-chip
+        v-for="(tag, index) in selectedTags"
+        :key="index"
+        backgroundColor="pink300"
+        color="pink50"
+        @delete="handleRemoveTags(index)"
+        showDelete>
+            {{ tag }}
+        </mu-chip><br/>
+        <mu-auto-complete
+        labelFloat
+        v-model="tagSelectorText"
+        :dataSource="tagSuggestions"
+        label="搜索/新建标签"
+        @change="handleTagSelectorChange"
+        @select="handleSelectSuggestions"
+        filter="caseInsensitiveFilter"/>
+        <mu-raised-button
+        label="添加标签"
+        icon="label"
+        backgroundColor="pink300"
+        :disabled="tagSelectorText.length === 0"
+        @click="handleCreateNewTag"
+        />
+        <br/>
         <mu-raised-button
         @click="handleOpenUploadDialog"
         :icon="cover.length === 0 ? 'file_upload' : 'refresh'"
-        backgroundColor="pink400"
+        backgroundColor="pink300"
         :label="cover.length === 0 ? '上传封面' : '更换封面'">
             <input
             id="fileUpload"
@@ -15,28 +40,30 @@
             ref="fileInputField"/>
         </mu-raised-button>
         <mu-raised-button
-        icon="visibility"
+        :icon=" inPreview ? 'mode_edit' : 'visibility'"
         backgroundColor="pink300"
-        label="预览"
+        :label="inPreview ? '编辑' : '预览'"
         @click="inPreview = !inPreview" />
         <mu-raised-button
         icon="image"
         label="查看封面"
         v-show="cover.length > 0"
         @click="coverVisible = true"
-        backgroundColor="pink200"
+        backgroundColor="pink300"
         />
-        <vue-markdown
-        :show="inPreview"
-        :watches="['show']"
-        :class="{'markdown-preview': inPreview}"
-        :source="content"/>
+        <mu-paper v-show="inPreview">
+            <vue-markdown
+            :show="inPreview"
+            :watches="['show']"
+            :class="{'markdown-preview': inPreview}"
+            :source="content"/>
+        </mu-paper>
         <mu-text-field
         v-show="!inPreview"
         v-model="content"
         ref="content"
         label="正文"
-        :rows="15"
+        :rows="12"
         multiLine
         labelFloat
         fullWidth/>
@@ -107,14 +134,30 @@ export default {
                 })
             }
         },
+        handleSelectSuggestions (item) {
+            this.selectedTags.push(item)
+        },
+        handleTagSelectorChange (value) {
+            console.log(this.selectedTags)
+            if (this.selectedTags.filter( t => t === value).length !== 0) {
+                setTimeout(() => this.tagSelectorText = '', 1)
+            }
+        },
+        handleRemoveTags (index) {
+            this.selectedTags = [...this.selectedTags.slice(0, index), ...this.selectedTags.slice(index + 1)]
+        },
+        handleCreateNewTag () {
+            this.selectedTags.push(this.tagSelectorText)
+            this.tagSelectorText = ''
+        },
         handleContentChange (e) {
             this.content = e.target.value
         },
         handlepublishPost () {
-            const { title, cover, abstract, content } = this
+            const { title, cover, abstract, content, selectedTags: tags } = this
             if (this.mode === MODE.ADD) {
                 this.publishPost({
-                title, cover, abstract, content
+                title, cover, abstract, content, tags
             })
             .then((res) => {
                 this.notificationVisible = true
@@ -123,7 +166,7 @@ export default {
             } else {
                 this.updatePost({
                     id: this.postDetail.data.id,
-                    title, cover, abstract, content
+                    title, cover, abstract, content, tags
                 })
                 .then((res) => {
                     this.notificationVisible = true
@@ -139,6 +182,8 @@ export default {
             cover: '',
             abstract: '',
             content: '',
+            tagSelectorText: '',
+            selectedTags: [],
             inPreview: false,
             coverVisible: false,
             notificationVisible: false,
@@ -147,7 +192,12 @@ export default {
     },
     computed: {
         MODE () { return MODE },
-        ...mapState(['postDetail'])
+        tagSuggestions () {
+            return this.tags.map(t => t.name)
+            .filter(t => this.selectedTags.indexOf(t) === -1) 
+        },
+        ...mapState(['postDetail']),
+        ...mapState({ tags: state => state.tag.data })
     },
 
     mounted () {
@@ -156,7 +206,8 @@ export default {
             this.title = value.title
             this.cover = value.cover
             this.abstract = value.abstract
-            this.content = value.content 
+            this.content = value.content
+            this.selectedTags = value.tags.map( t => t.name)
         })
         const { id } = this.$route.params
         if (id) {
@@ -174,11 +225,17 @@ export default {
         display: none;
     }
     .markdown-preview {
-        min-height: 414px;
+        min-height: 342px;
         width: 1147px;
         padding: 28px 0 12px 0;
     }
-
+    .mu-chip {
+        margin-right: 10px;
+    }
+    .mu-paper {
+        padding: 20px;
+        margin: 10px 0;
+    }
 </style>
 <style>
     .mu-popup-top.notification {

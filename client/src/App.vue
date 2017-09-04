@@ -58,4 +58,11 @@ export default {
     .mu-icon-button {
         transition: padding-left 1s
     }
+    .mu-appbar {
+        position: fixed;
+        top: 0px;
+    }
+    main {
+        margin-top: 110px;
+    }
 </style>

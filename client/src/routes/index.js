@@ -6,6 +6,7 @@ import AdminLogin from '../containers/AdminLogin.vue'
 import AdminPost from '../components/AdminPost.vue'
 import AdminPostList from '../components/AdminPostList.vue'
 import PostModify from '../components/PostModify.vue'
+import AdminTagList from '../components/AdminTagList.vue'
 
 export default [
     {
@@ -50,10 +51,10 @@ export default [
                             }
                         ]
                     },
-                    // {
-                    //     path: 'tag',
-                    //     // component:
-                    // },
+                    {
+                        path: 'tag',
+                        component: AdminTagList,
+                    },
                 ]
             }
         ]

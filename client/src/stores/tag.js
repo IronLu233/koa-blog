@@ -1,11 +1,11 @@
 import fetchAPI from '../APIs';
 export default {
     state: {
-        tags: []
+        data: []
     },
     mutations: {
         updateTags: (state, tags) => {
-            state.tags = tags
+            state.data = tags
         },
 
     },
@@ -15,6 +15,24 @@ export default {
             .then(res => {
                 commit('updateTags', res.data)
                 return res
+            })
+        },
+        delTag: ({ commit, dispatch }, postId) => {
+            fetchAPI.delTag(postId)
+            .then(res => {
+                return dispatch('fetchTags')
+            })
+        },
+        updateTag: ({ dispatch }, tag) => {
+            fetchAPI.updateTag(tag)
+            .then(() => {
+                return dispatch('fetchTags')
+            })
+        },
+        addTag: ({ dispatch }, tagName) => {
+            return fetchAPI.addTag(tagName)
+            .then(() => {
+                return dispatch('fetchTags')
             })
         }
     }

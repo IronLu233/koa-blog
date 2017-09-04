@@ -8,7 +8,7 @@ router
 .get('/', async ctx => {
     const { Tag } = global
     const tags = await Tag.collection().fetch()
-    ctx.body = tags.toJSON()
+    ctx.body = tags.map(t => ({ name: t.get('name'), uniqueName: t.get('uniqueName'), id: t.get('id') }))
 })
 .get('/:id', async ctx => {
     const { Tag } = global
