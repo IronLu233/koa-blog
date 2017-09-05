@@ -1,6 +1,6 @@
 <template>
         <loadding-spinner v-if="this.postList.initial"/>
-        <div v-else>
+        <div v-else class="post-content">
             <PostContent
             v-for="(post, index) in this.postList.data"
             :key="index"
@@ -35,6 +35,9 @@ export default {
         justify-content: center;
         height: calc(100vh - 150px);
         width: 100%;
+    }
+    .post-content:first-child {
+        margin-top: 110px;
     }
 </style>
 

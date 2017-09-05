@@ -10,7 +10,7 @@
                 icon="menu"
                 :style="{marginLeft: isDrawerOpen ? '256px': 'initial',  }"
                 />
-                <mu-icon-button @click="onFilterClick" icon="filter_list" slot="right"/>
+                <!-- <mu-icon-button @click="onFilterClick" icon="filter_list" slot="right"/> -->
                 <mu-icon-button to="/admin/login" icon="build" slot="right"/>
             </mu-appbar>
         </header>
@@ -63,6 +63,6 @@ export default {
         top: 0px;
     }
     main {
-        margin-top: 110px;
+        margin-top: 64px;
     }
 </style>
