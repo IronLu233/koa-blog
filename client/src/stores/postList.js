@@ -20,9 +20,9 @@ export default {
         turnNextPage: state => ++state.currentPage
     },
     actions: {
-        loadPosts: ({ commit, state }) => {
+        loadPosts: ({ commit, state }, params) => {
             commit('startLoading')
-            return fetchAPI.fetchPostList()
+            return fetchAPI.fetchPostList(params)
             .then(res => {
                 commit('endLoading')
                 commit('updatePost', res.data)
@@ -43,11 +43,10 @@ export default {
             return fetchAPI.uploadCover(image)
         },
         publishPost: ({ state, commit }, post) => {
+            console.log(post)
             return fetchAPI.publishPost(post)
         },
-        updatePost: (context, post) => {
-            
-        }
+
     },
     
 }

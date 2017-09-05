@@ -10,9 +10,19 @@
                 icon="menu"
                 :style="{marginLeft: isDrawerOpen ? '256px': 'initial',  }"
                 />
-                <!-- <mu-icon-button @click="onFilterClick" icon="filter_list" slot="right"/> -->
+                <mu-icon-button @click="isBottomSheetOpen = true" icon="filter_list" slot="right"/>
                 <mu-icon-button to="/admin/login" icon="build" slot="right"/>
             </mu-appbar>
+            <mu-bottom-sheet :open="isBottomSheetOpen" @close="isBottomSheetOpen = false">
+                <mu-sub-header>请选择一个标签</mu-sub-header>
+                <mu-list @itemClick="isBottomSheetOpen = false">
+                    <mu-list-item
+                    v-for="tag in tags"
+                    :key="tag.uniqueName"
+                    :to="`/post/?tag=${tag.uniqueName}`"
+                    :title="tag.name"/>
+                </mu-list>
+            </mu-bottom-sheet>
         </header>
         <main><router-view></router-view></main>
     </div>
@@ -24,19 +34,23 @@ import _ from 'lodash'
 
 export default {
     methods: {
-        onFilterClick: function (e) {
-
-        },
         ...mapMutations(['toggleDrawer']),
         ...mapActions(['fetchTags'])
     },
+    data () {
+        return {
+            isBottomSheetOpen: false
+        }
+    }
+    ,
     computed: {
         inAdminPage () {
             const { path } = this.$route
             return path.indexOf('admin') !== -1 && path.indexOf('login') === -1
         },
         ...mapState({
-            isDrawerOpen: state => state.shared.isDrawerOpen
+            isDrawerOpen: state => state.shared.isDrawerOpen,
+            tags: state => state.tag.data
         })
     },
     mounted () {
@@ -63,6 +77,6 @@ export default {
         top: 0px;
     }
     main {
-        margin-top: 64px;
+        margin-top: 80px;
     }
 </style>

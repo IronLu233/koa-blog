@@ -1,6 +1,15 @@
 <template>
-        <loadding-spinner v-if="this.postList.initial"/>
+        <LoadingSpinner v-if="this.postList.initial"/>
         <div v-else class="post-content">
+            <mu-breadcrumb class="mu-breadcrumb">
+                <template v-if="$route.query.tag">
+                    <mu-breadcrumb-item href="/post"><mu-icon value="home" :size="14"/><router-link to="/post">首页</router-link></mu-breadcrumb-item>
+                    <mu-breadcrumb-item><mu-icon value="filter_list" :size="14"/>筛选结果</mu-breadcrumb-item>
+                </template>
+                <template v-else>
+                   <mu-breadcrumb-item><mu-icon value="home" :size="14"/>首页</mu-breadcrumb-item> 
+                </template>
+            </mu-breadcrumb>
             <PostContent
             v-for="(post, index) in this.postList.data"
             :key="index"
@@ -16,12 +25,20 @@ export default {
     methods: {
         ...mapActions(['loadPosts', 'loadMorePosts'])
     },
-    mounted: function () {
-        this.loadPosts()
+    mounted () {
+        this.loadPosts(this.$route.query)
     },
-  components: {
-      PostContent
-  },
+    
+    beforeRouteUpdate (to, from, next) {
+        this.loadPosts(to.query)
+        next()
+    },
+    components: {
+        LoadingSpinner
+    },
+    components: {
+        PostContent
+    },
   computed: {
       ...mapState(['postList'])
   }
@@ -37,7 +54,14 @@ export default {
         width: 100%;
     }
     .post-content:first-child {
-        margin-top: 110px;
+        // margin-top: 60px;
     }
+
 </style>
 
+
+<style lang="scss" scoped>
+    .mu-breadcrumb {
+        margin-left: 40px;
+    }
+</style>

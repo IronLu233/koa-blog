@@ -7,12 +7,17 @@
             </mu-card-media>
             <mu-card-title :title="postDetail.data.title" />
             <mu-card-actions>
-                <mu-chip v-for="(tag, index) in postDetail.data.tags" :key="index">
-                    {{ tag.name }}
+                <div style="margin-left: 30px">
+                <mu-chip v-for="tag in postDetail.data.tags" :key="tag.uniqueName">
+                    <router-link :to="`/post/?tag=${tag.uniqueName}`">{{ tag.name }}</router-link>
                 </mu-chip>
+                </div>
             </mu-card-actions>
             <mu-card-text>
-                <vue-markdown class="markdown-text" slot="default">{{ postDetail.data.content }}</vue-markdown>
+                <vue-markdown
+                class="markdown-text"
+                :postrender="highlight"
+                slot="default">{{ postDetail.data.content }}</vue-markdown>
             </mu-card-text>
         </mu-card>
     </mu-paper>
@@ -21,15 +26,22 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 import VueMarkdown from 'vue-markdown'
-
+import Prism from 'prismjs'
 import LoadingSpinner from '../components/LoadingSpinner.vue'
 
 export default {
   methods: {
+      highlight (text) {
+        Prism.highlightAll()
+        return text
+      },
       ...mapActions([ 'loadPostDetail' ])
   },
   computed: {
       ...mapState([ 'postDetail' ])
+  },
+  beforeRouteUpdate() {
+      this.loadPostDetail(this.$route.params.id)
   },
   mounted: function () {
       this.loadPostDetail(this.$route.params.id)
@@ -41,7 +53,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+    .mu-chip {
+        margin-right: 20px;
+    }
     .mu-card {
         padding-top: -20px;
     }

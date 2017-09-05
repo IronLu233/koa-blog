@@ -7,9 +7,15 @@ const uploadKit = require('../middlewares/upload')
 const router = new Router({ prefix: '/post' })
 router
 .get('/', async ctx => {
-    const { Post } = global
+    const { Post, Tag } = global
     const posts = await Post.collection().fetch({ withRelated: ['tags'] })
-    ctx.body = posts.toJSON()
+    const data = posts.toJSON()
+    if (ctx.query.tag) {
+        ctx.body = data.filter(p => p.tags.map(t => t.uniqueName).indexOf(ctx.query.tag) !== -1)
+    } else {
+        ctx.body = data
+    }
+
 })
 .get('/:id', async ctx => {
     const { Post } = global
@@ -25,7 +31,6 @@ router
 })
 .post('/upload', isAuthenticated, uploadKit.single('image'), async ctx => {
     const { file } = ctx.req;
-    console.log(file)
     if (!file) {
         ctx.body = { detail: 'Bad request' }
         ctx.status = 400
@@ -37,7 +42,7 @@ router
 })
 .post('/', isAuthenticated, async ctx => {
     const { Post, Tag } = global
-    const { title, content, tags = [], abstract, cover } = ctx.request.body
+    const { title = '', content = '', tags = [], abstract = '', cover = ''} = ctx.request.body
     if (!title || !content) {
         ctx.body = {
             detail: 'Bad request',
@@ -47,15 +52,16 @@ router
     }
     
     let post = new Post({ title, content, abstract, cover })
-    for(let t in tags) {
+    await post.save()
+    for(let t of tags) {
         let tag = await Tag.where({ name: t }).fetch()
         if (!tag) {
             tag = new Tag({ name: t })
             await tag.save()
+            console.log(tag)
         }
-        post.tags.attach(tag.id)
+        await post.tags().attach(tag.id)
     }
-    post = await post.save()
     ctx.body = post.toJSON()
 })
 .patch('/:id', isAuthenticated, uploadKit.single(), async ctx => {

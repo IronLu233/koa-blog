@@ -43,6 +43,7 @@
     "mocha": "^3.5.0",
     "muse-ui": "^2.1.0",
     "node-sass": "^4.5.3",
+    "prismjs": "^1.6.0",
     "readline-sync": "^1.4.7",
     "sass-loader": "^6.0.6",
     "slug": "^0.9.1",

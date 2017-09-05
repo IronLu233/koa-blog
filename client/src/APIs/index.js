@@ -6,7 +6,8 @@ const provider = axios.create({
 
 export default {
     fetchPostList: (params) => {
-        return provider.get('/api/post')
+        return provider.get('/api/post',
+    { params })
     },
     fetchPostDetail: (id) => {
         return provider.get(`/api/post/${id}`)

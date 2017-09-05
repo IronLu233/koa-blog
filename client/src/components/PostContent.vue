@@ -20,7 +20,7 @@ export default {
 </script>
 <style lang="scss" scoped>
     .mu-paper {
-        margin: 45px 140px;
+        margin: 30px 140px;
         
     }
     .mu-card-media {

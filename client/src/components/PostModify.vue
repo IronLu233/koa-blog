@@ -56,7 +56,9 @@
             :show="inPreview"
             :watches="['show']"
             :class="{'markdown-preview': inPreview}"
-            :source="content"/>
+            >
+            {{ content }}
+            </vue-markdown>
         </mu-paper>
         <mu-text-field
         v-show="!inPreview"

@@ -73,6 +73,7 @@ export default {
           } else {
               this.addTag(this.newTagName)
           }
+          this.newTagName = ''
           this.tagNameModifyDialogVisible = false
       },
       handleDelTag (id) {
@@ -80,7 +81,7 @@ export default {
       },
       handleDelSelectedTags() {
           this.selectedTags
-          .map(t => t.tags[t].id)
+          .map(t => this.tags[t].id)
           .map(t => this.delTag(t))
       },
 
